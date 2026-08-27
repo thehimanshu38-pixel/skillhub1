@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title><%= settings.site_name %> — Learn Skills That Pay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="/" class="logo">
+        <img src="<%= settings.logo_path %>" alt="<%= settings.site_name %> logo" onerror="this.style.display='none'">
+        <span><%= settings.site_name %></span>
+      </a>
+      <nav class="main-nav">
+        <a href="#home">Home</a>
+        <a href="#pricing">Packages</a>
+        <a href="#impact">Our Impact</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <div class="header-actions">
+        <a href="/admin/login" class="btn btn-ghost">Admin</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <span class="eyebrow">Online Learning Platform</span>
+      <h1><%= settings.hero_title %></h1>
+      <p><%= settings.hero_subtitle %></p>
+      <div class="hero-actions">
+        <a href="#pricing" class="btn btn-primary">View Packages</a>
+        <a href="#faq" class="btn btn-outline">Learn More</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="section" id="pricing">
+    <div class="container">
+      <span class="section-label">Packages</span>
+      <h2 class="section-title">Choose Your Package</h2>
+      <p class="section-sub">Pick the plan that matches your goals and budget.</p>
+
+      <div class="package-grid">
+        <% packages.forEach(function(pkg) { %>
+          <div class="package-card">
+            <img src="<%= pkg.image_path %>" alt="<%= pkg.title %>" class="package-img" onerror="this.style.display='none'">
+            <h3><%= pkg.title %></h3>
+            <ul class="package-courses">
+              <% pkg.courses.forEach(function(c) { %>
+                <li><%= c %></li>
+              <% }); %>
+            </ul>
+            <div class="package-meta">
+              <span>⭐ <%= pkg.rating %></span>
+              <span><%= pkg.students_text %></span>
+            </div>
+            <div class="package-footer">
+              <span class="package-price"><%= pkg.price %></span>
+              <a href="#" class="btn btn-primary btn-sm">Enroll Now</a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Impact -->
+  <section class="section section-dark" id="impact">
+    <div class="container">
+      <span class="section-label light">Our Impact</span>
+      <h2 class="section-title light">Trusted by learners, proven by results</h2>
+
+      <div class="stats-grid">
+        <div class="stat"><strong><%= settings.impact_students %></strong><span>Students Enrolled</span></div>
+        <div class="stat"><strong><%= settings.impact_courses %></strong><span>Active Courses</span></div>
+        <div class="stat"><strong><%= settings.impact_mentors %></strong><span>Expert Mentors</span></div>
+        <div class="stat"><strong><%= settings.impact_awards %></strong><span>Awards Won</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-title">Real learners, real results</h2>
+
+      <div class="testimonial-grid">
+        <% testimonials.forEach(function(t) { %>
+          <div class="testimonial-card">
+            <p class="quote">“<%= t.message %>”</p>
+            <div class="testimonial-person">
+              <img src="<%= t.image_path %>" alt="<%= t.name %>" onerror="this.style.display='none'">
+              <div>
+                <strong><%= t.name %></strong>
+                <span><%= t.role %></span>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <span class="section-label">FAQ</span>
+      <h2 class="section-title">Frequently asked questions</h2>
+
+      <div class="faq-list">
+        <% faqs.forEach(function(f, i) { %>
+          <details class="faq-item" <%= i === 0 ? "open" : "" %>>
+            <summary><%= f.question %></summary>
+            <p><%= f.answer %></p>
+          </details>
+        <% }); %>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <div class="logo">
+          <img src="<%= settings.logo_path %>" alt="<%= settings.site_name %> logo" onerror="this.style.display='none'">
+          <span><%= settings.site_name %></span>
+        </div>
+        <p><%= settings.contact_location %></p>
+        <p><%= settings.contact_email %></p>
+        <p><%= settings.contact_phone %></p>
+      </div>
+      <p class="copyright">© <%= new Date().getFullYear() %> <%= settings.site_name %>. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
