@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard — <%= settings.site_name %></title>
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="admin-brand"><%= settings.site_name %></div>
+      <nav>
+        <a href="#site-settings">Logo & Site Info</a>
+        <a href="#impact">Our Impact</a>
+        <a href="#packages">Packages</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#faqs">FAQ</a>
+        <a href="#password">Change Password</a>
+      </nav>
+      <form method="POST" action="/admin/logout">
+        <button class="btn btn-outline btn-block" type="submit">Log Out</button>
+      </form>
+      <a href="/" target="_blank" class="view-site-link">View live site →</a>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-topbar">
+        <h1>Welcome, <%= adminUsername %></h1>
+        <% if (saved) { %><span class="save-badge">Saved ✓</span><% } %>
+      </header>
+
+      <!-- ===== Site Settings + Logo + Impact ===== -->
+      <section class="admin-card" id="site-settings">
+        <h2>Logo & Site Info</h2>
+        <form method="POST" action="/admin/settings" enctype="multipart/form-data" class="admin-form">
+          <div class="form-row">
+            <div>
+              <label>Site Name</label>
+              <input type="text" name="site_name" value="<%= settings.site_name %>">
+            </div>
+            <div>
+              <label>Logo (image file)</label>
+              <input type="file" name="logo" accept="image/*">
+              <img src="<%= settings.logo_path %>" class="preview-thumb" alt="current logo" onerror="this.style.display='none'">
+            </div>
+          </div>
+
+          <label>Hero Title</label>
+          <input type="text" name="hero_title" value="<%= settings.hero_title %>">
+
+          <label>Hero Subtitle</label>
+          <textarea name="hero_subtitle" rows="2"><%= settings.hero_subtitle %></textarea>
+
+          <h3 id="impact">Our Impact Numbers</h3>
+          <div class="form-row four">
+            <div><label>Students</label><input type="text" name="impact_students" value="<%= settings.impact_students %>"></div>
+            <div><label>Courses</label><input type="text" name="impact_courses" value="<%= settings.impact_courses %>"></div>
+            <div><label>Mentors</label><input type="text" name="impact_mentors" value="<%= settings.impact_mentors %>"></div>
+            <div><label>Awards</label><input type="text" name="impact_awards" value="<%= settings.impact_awards %>"></div>
+          </div>
+
+          <h3>Contact Info</h3>
+          <div class="form-row">
+            <div><label>Email</label><input type="text" name="contact_email" value="<%= settings.contact_email %>"></div>
+            <div><label>Phone</label><input type="text" name="contact_phone" value="<%= settings.contact_phone %>"></div>
+            <div><label>Location</label><input type="text" name="contact_location" value="<%= settings.contact_location %>"></div>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Save Site Settings</button>
+        </form>
+      </section>
+
+      <!-- ===== Packages ===== -->
+      <section class="admin-card" id="packages">
+        <h2>Packages</h2>
+
+        <div class="item-list">
+          <% packages.forEach(function(pkg) { %>
+            <details class="item-editor">
+              <summary><%= pkg.title %> — <%= pkg.price %></summary>
+              <form method="POST" action="/admin/packages/<%= pkg.id %>/update" enctype="multipart/form-data" class="admin-form">
+                <div class="form-row">
+                  <div><label>Title</label><input type="text" name="title" value="<%= pkg.title %>"></div>
+                  <div><label>Price</label><input type="text" name="price" value="<%= pkg.price %>"></div>
+                </div>
+                <label>Courses (one per line)</label>
+                <textarea name="courses" rows="3"><%= pkg.courses %></textarea>
+                <div class="form-row">
+                  <div><label>Rating</label><input type="text" name="rating" value="<%= pkg.rating %>"></div>
+                  <div><label>Students Text</label><input type="text" name="students_text" value="<%= pkg.students_text %>"></div>
+                  <div><label>Sort Order</label><input type="number" name="sort_order" value="<%= pkg.sort_order %>"></div>
+                </div>
+                <label>Package Image</label>
+                <input type="file" name="image" accept="image/*">
+                <img src="<%= pkg.image_path %>" class="preview-thumb" onerror="this.style.display='none'">
+
+                <div class="btn-row">
+                  <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                </div>
+              </form>
+              <form method="POST" action="/admin/packages/<%= pkg.id %>/delete" onsubmit="return confirm('Delete this package?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Package</button>
+              </form>
+            </details>
+          <% }); %>
+        </div>
+
+        <details class="item-editor add-new">
+          <summary>+ Add New Package</summary>
+          <form method="POST" action="/admin/packages/add" enctype="multipart/form-data" class="admin-form">
+            <div class="form-row">
+              <div><label>Title</label><input type="text" name="title" required></div>
+              <div><label>Price</label><input type="text" name="price" required></div>
+            </div>
+            <label>Courses (one per line)</label>
+            <textarea name="courses" rows="3" placeholder="Course A&#10;Course B&#10;Course C"></textarea>
+            <div class="form-row">
+              <div><label>Rating</label><input type="text" name="rating" value="4.8"></div>
+              <div><label>Students Text</label><input type="text" name="students_text" value="1k+ students"></div>
+              <div><label>Sort Order</label><input type="number" name="sort_order" value="0"></div>
+            </div>
+            <label>Package Image</label>
+            <input type="file" name="image" accept="image/*">
+            <button type="submit" class="btn btn-primary">Add Package</button>
+          </form>
+        </details>
+      </section>
+
+      <!-- ===== Testimonials ===== -->
+      <section class="admin-card" id="testimonials">
+        <h2>Testimonials</h2>
+
+        <div class="item-list">
+          <% testimonials.forEach(function(t) { %>
+            <details class="item-editor">
+              <summary><%= t.name %> — <%= t.role %></summary>
+              <form method="POST" action="/admin/testimonials/<%= t.id %>/update" enctype="multipart/form-data" class="admin-form">
+                <div class="form-row">
+                  <div><label>Name</label><input type="text" name="name" value="<%= t.name %>"></div>
+                  <div><label>Role</label><input type="text" name="role" value="<%= t.role %>"></div>
+                  <div><label>Sort Order</label><input type="number" name="sort_order" value="<%= t.sort_order %>"></div>
+                </div>
+                <label>Message</label>
+                <textarea name="message" rows="3"><%= t.message %></textarea>
+                <label>Photo</label>
+                <input type="file" name="image" accept="image/*">
+                <img src="<%= t.image_path %>" class="preview-thumb round" onerror="this.style.display='none'">
+                <div class="btn-row">
+                  <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                </div>
+              </form>
+              <form method="POST" action="/admin/testimonials/<%= t.id %>/delete" onsubmit="return confirm('Delete this testimonial?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete Testimonial</button>
+              </form>
+            </details>
+          <% }); %>
+        </div>
+
+        <details class="item-editor add-new">
+          <summary>+ Add New Testimonial</summary>
+          <form method="POST" action="/admin/testimonials/add" enctype="multipart/form-data" class="admin-form">
+            <div class="form-row">
+              <div><label>Name</label><input type="text" name="name" required></div>
+              <div><label>Role</label><input type="text" name="role" placeholder="Student"></div>
+              <div><label>Sort Order</label><input type="number" name="sort_order" value="0"></div>
+            </div>
+            <label>Message</label>
+            <textarea name="message" rows="3" required></textarea>
+            <label>Photo</label>
+            <input type="file" name="image" accept="image/*">
+            <button type="submit" class="btn btn-primary">Add Testimonial</button>
+          </form>
+        </details>
+      </section>
+
+      <!-- ===== FAQ ===== -->
+      <section class="admin-card" id="faqs">
+        <h2>FAQ</h2>
+
+        <div class="item-list">
+          <% faqs.forEach(function(f) { %>
+            <details class="item-editor">
+              <summary><%= f.question %></summary>
+              <form method="POST" action="/admin/faqs/<%= f.id %>/update" class="admin-form">
+                <label>Question</label>
+                <input type="text" name="question" value="<%= f.question %>">
+                <label>Answer</label>
+                <textarea name="answer" rows="3"><%= f.answer %></textarea>
+                <label>Sort Order</label>
+                <input type="number" name="sort_order" value="<%= f.sort_order %>">
+                <div class="btn-row">
+                  <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                </div>
+              </form>
+              <form method="POST" action="/admin/faqs/<%= f.id %>/delete" onsubmit="return confirm('Delete this FAQ?')">
+                <button type="submit" class="btn btn-danger btn-sm">Delete FAQ</button>
+              </form>
+            </details>
+          <% }); %>
+        </div>
+
+        <details class="item-editor add-new">
+          <summary>+ Add New FAQ</summary>
+          <form method="POST" action="/admin/faqs/add" class="admin-form">
+            <label>Question</label>
+            <input type="text" name="question" required>
+            <label>Answer</label>
+            <textarea name="answer" rows="3" required></textarea>
+            <label>Sort Order</label>
+            <input type="number" name="sort_order" value="0">
+            <button type="submit" class="btn btn-primary">Add FAQ</button>
+          </form>
+        </details>
+      </section>
+
+      <!-- ===== Change Password ===== -->
+      <section class="admin-card" id="password">
+        <h2>Change Admin Password</h2>
+        <form method="POST" action="/admin/change-password" class="admin-form">
+          <label>Current Password</label>
+          <input type="password" name="current_password" required>
+          <label>New Password</label>
+          <input type="password" name="new_password" required minlength="6">
+          <button type="submit" class="btn btn-primary">Update Password</button>
+        </form>
+      </section>
+
+    </main>
+  </div>
+
+</body>
+</html>
